@@ -3029,14 +3029,16 @@
     async function salvarTransacao(t) {
       try {
         if (!t.id) t.id = gerarId();
-        const { error } = await _supabase.from('transacoes').upsert(t);
-        if (error) throw error;
-        
         const idx = transacoes.findIndex(x => x.id === t.id);
         if (idx >= 0) transacoes[idx] = t; else transacoes.push(t);
-        
         atualizarTudo();
-      } catch (e) { alert('Erro ao salvar no Supabase: ' + e.message); }
+
+        const { error } = await _supabase.from('transacoes').upsert(t, { onConflict: 'id' });
+        if (error) throw error;
+      } catch (e) {
+        console.error('Erro ao salvar no Supabase:', e);
+        alert('Erro ao salvar no Supabase: ' + (e.message || e));
+      }
     }
 
     async function deletarTransacao(id) {
