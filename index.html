@@ -3022,8 +3022,13 @@
       } catch (e) { console.error('Erro ao carregar do Supabase:', e); }
     }
 
+    function gerarId() {
+      return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+    }
+
     async function salvarTransacao(t) {
       try {
+        if (!t.id) t.id = gerarId();
         const { error } = await _supabase.from('transacoes').upsert(t);
         if (error) throw error;
         
