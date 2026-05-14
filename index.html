@@ -87,7 +87,7 @@
       position: fixed;
       inset: 0;
       background: var(--bg);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 9999;
@@ -656,6 +656,24 @@
     .logout-btn:hover {
       background: var(--red-dim);
       border-color: var(--red);
+    }
+
+    .login-btn {
+      background: transparent;
+      border: 1px solid rgba(99, 130, 255, 0.3);
+      color: var(--blue);
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .login-btn:hover {
+      background: var(--blue-dim);
+      border-color: var(--blue);
     }
 
     /* SEARCH BAR */
@@ -2500,7 +2518,8 @@
           <span id="connBadge" class="conn-badge">💾 Local</span>
           <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Alternar tema">🌙</button>
           <button class="icon-btn" onclick="abrirModalPerfil()" title="Perfil">👤</button>
-          <button class="logout-btn" onclick="fazerLogout()">SAIR</button>
+          <button class="login-btn" id="loginBtnTop" onclick="mostrarLogin()" style="display:none">ADMIN</button>
+          <button class="logout-btn" onclick="fazerLogout()" id="logoutBtn">SAIR</button>
         </div>
       </div>
 
@@ -3299,6 +3318,15 @@
       editElements.forEach(el => {
         el.style.display = isAdmin ? '' : 'none';
       });
+      const loginBtn = document.getElementById('loginBtnTop');
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (usuarioLogado && usuarioLogado.usuario === 'visitante') {
+        loginBtn.style.display = 'inline-flex';
+        logoutBtn.style.display = 'none';
+      } else {
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-flex';
+      }
     }
 
     const hoje = new Date();
@@ -3308,19 +3336,19 @@
     document.getElementById('gerarMes').value = hoje.getMonth();
 
 
+    function mostrarLogin() {
+      const ls = document.getElementById('loginScreen');
+      ls.style.display = 'flex';
+      ls.classList.remove('hide');
+      document.getElementById('loginUser').focus();
+    }
+
     function fazerLogout() {
-      if (!confirm('Deseja sair?')) return;
+      if (!confirm('Deseja sair do modo administrador?')) return;
       sessionStorage.removeItem('_scf_sess');
       usuarioLogado = null;
-      const ls = document.getElementById('loginScreen');
-      const app = document.getElementById('mainApp');
-      app.classList.remove('visible');
-      ls.style.display = 'flex'; ls.classList.remove('hide');
-      document.getElementById('loginUser').value = '';
-      document.getElementById('loginPass').value = '';
-      document.getElementById('loginBtn').textContent = 'ENTRAR';
-      document.getElementById('loginBtn').classList.remove('loading');
-      setTimeout(() => { app.style.display = 'none'; }, 500);
+      // Volta para modo visitante
+      entrarVisitante();
     }
 
     function checkSessao() {
@@ -3332,7 +3360,11 @@
           if (c) { usuarioLogado = c; entrar(c); return; }
           if (d.usuario === 'visitante') { entrarVisitante(); return; }
         }
-      } catch (e) { }
+        // Se não há sessão, entra como visitante automaticamente
+        entrarVisitante();
+      } catch (e) { 
+        entrarVisitante();
+      }
     }
 
     function inicApp() {
