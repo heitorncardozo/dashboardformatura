@@ -3006,13 +3006,43 @@
       console.log('Dados sincronizados com Supabase');
     }
 
+    function mapTransacaoFromDb(row) {
+      return {
+        id: row.id,
+        data: row.data,
+        descricao: row.descricao,
+        valor: Number(row.valor),
+        categoria: row.categoria,
+        tipo: row.tipo,
+        status: row.status,
+        valorBaixado: row.valor_baixado != null ? Number(row.valor_baixado) : 0,
+        dataBaixa: row.data_baixa || null,
+        formaBaixa: row.forma_baixa || null
+      };
+    }
+
+    function mapTransacaoToDb(t) {
+      return {
+        id: t.id,
+        data: t.data,
+        descricao: t.descricao,
+        valor: t.valor,
+        categoria: t.categoria,
+        tipo: t.tipo,
+        status: t.status,
+        valor_baixado: t.valorBaixado || 0,
+        data_baixa: t.dataBaixa || null,
+        forma_baixa: t.formaBaixa || null
+      };
+    }
+
     async function carregarDados() {
       try {
         const { data: tData } = await _supabase.from('transacoes').select('*');
         const { data: rData } = await _supabase.from('recorrentes').select('*');
         const { data: mData } = await _supabase.from('metas').select('*');
         
-        transacoes = tData || [];
+        transacoes = (tData || []).map(mapTransacaoFromDb);
         recorrentes = rData || [];
         metas = mData || [];
         
@@ -3033,7 +3063,8 @@
         if (idx >= 0) transacoes[idx] = t; else transacoes.push(t);
         atualizarTudo();
 
-        const { error } = await _supabase.from('transacoes').upsert(t, { onConflict: 'id' });
+        const dbRow = mapTransacaoToDb(t);
+        const { error } = await _supabase.from('transacoes').upsert(dbRow, { onConflict: 'id' });
         if (error) throw error;
       } catch (e) {
         console.error('Erro ao salvar no Supabase:', e);
