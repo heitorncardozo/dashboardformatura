@@ -2271,6 +2271,113 @@
       }
     }
 
+    @media (max-width:600px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .action-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .charts-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .page-content {
+        padding: 12px;
+      }
+
+      .metric-card {
+        padding: 18px 20px 22px;
+      }
+
+      .metric-value {
+        font-size: 24px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .card-title {
+        font-size: 13px;
+        margin-bottom: 16px;
+      }
+
+      .donut-wrap {
+        width: 140px;
+        height: 140px;
+      }
+
+      .donut-total {
+        font-size: 16px;
+      }
+
+      .table-card {
+        overflow-x: auto;
+      }
+
+      .data-table {
+        min-width: 600px;
+      }
+
+      .data-table th,
+      .data-table td {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .section-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .section-header > div:first-child {
+        width: 100%;
+      }
+
+      .section-header > div:last-child {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .login-card {
+        padding: 30px 24px;
+      }
+    }
+
+    @media (max-width:480px) {
+      .sidebar {
+        width: 200px !important;
+      }
+
+      .metric-value {
+        font-size: 22px;
+      }
+
+      .donut-wrap {
+        width: 120px;
+        height: 120px;
+      }
+
+      .donut-total {
+        font-size: 14px;
+      }
+
+      .chart-bars {
+        height: 120px;
+      }
+
+      .bars-grp {
+        height: 100px;
+      }
+    }
+
     .mob-overlay {
       display: none;
       position: fixed;
